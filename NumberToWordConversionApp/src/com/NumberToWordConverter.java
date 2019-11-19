@@ -2,10 +2,12 @@ package com;
 
 import java.text.DecimalFormat;
 
+import com.service.NumToWordService;
 
-public class NumberToWordConverter {
 
+public class NumberToWordConverter implements NumToWordService{
 
+	static NumberToWordConverter numConverter=new NumberToWordConverter();
 	  private static final String[] tensNames = {
 	    "",
 	    " ten",
@@ -52,17 +54,15 @@ public class NumberToWordConverter {
 		  }
 		  else{
 			  try {
-				throw new Exception();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println("Exception is thrown");
-				
+				throw  new CustomizedException("invalid input"); 
+			} catch (CustomizedException e) {
+					System.out.println(e.getMessage());
 			}
 		  }
 		  return "It is not a Number ";
 		  
 	  }
-	  private static String convertLessThanOneThousand(int number) {
+	 public String convertLessThanOneThousand(int number) {
 	    String soFar;
 
 	    if (number % 100 < 20){
@@ -87,18 +87,17 @@ public class NumberToWordConverter {
 
 	    String snumber = Long.toString(number);
 
-	    // pad with "0"
+
 	    String mask = "000000000000";
 	    DecimalFormat df = new DecimalFormat(mask);
 	    snumber = df.format(number);
 
-	    // XXXnnnnnnnnn
 	    int billions = Integer.parseInt(snumber.substring(0,3));
-	    // nnnXXXnnnnnn
+
 	    int millions  = Integer.parseInt(snumber.substring(3,6));
-	    // nnnnnnXXXnnn
+
 	    int hundredThousands = Integer.parseInt(snumber.substring(6,9));
-	    // nnnnnnnnnXXX
+
 	    int thousands = Integer.parseInt(snumber.substring(9,12));
 
 	    String tradBillions;
@@ -107,11 +106,11 @@ public class NumberToWordConverter {
 	      tradBillions = "";
 	      break;
 	    case 1 :
-	      tradBillions = convertLessThanOneThousand(billions)
+	      tradBillions = numConverter.convertLessThanOneThousand(billions)
 	      + " billion ";
 	      break;
 	    default :
-	      tradBillions = convertLessThanOneThousand(billions)
+	      tradBillions = numConverter.convertLessThanOneThousand(billions)
 	      + " billion ";
 	    }
 	    String result =  tradBillions;
@@ -122,11 +121,11 @@ public class NumberToWordConverter {
 	      tradMillions = "";
 	      break;
 	    case 1 :
-	      tradMillions = convertLessThanOneThousand(millions)
+	      tradMillions = numConverter.convertLessThanOneThousand(millions)
 	         + " million ";
 	      break;
 	    default :
-	      tradMillions = convertLessThanOneThousand(millions)
+	      tradMillions = numConverter.convertLessThanOneThousand(millions)
 	         + " million ";
 	    }
 	    result =  result + tradMillions;
@@ -140,16 +139,16 @@ public class NumberToWordConverter {
 	      tradHundredThousands = "one thousand ";
 	      break;
 	    default :
-	      tradHundredThousands = convertLessThanOneThousand(hundredThousands)
+	      tradHundredThousands = numConverter.convertLessThanOneThousand(hundredThousands)
 	         + " thousand ";
 	    }
 	    result =  result + tradHundredThousands;
 
 	    String tradThousand;
-	    tradThousand = convertLessThanOneThousand(thousands);
+	    tradThousand = numConverter.convertLessThanOneThousand(thousands);
 	    result =  result + tradThousand;
 
-	    // remove extra spaces!
+	  
 	    return result.replaceAll("^\\s+", "").replaceAll("\\b\\s{2,}\\b", " ");
 	  }
 

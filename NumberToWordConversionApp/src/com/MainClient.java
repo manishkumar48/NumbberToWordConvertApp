@@ -13,11 +13,13 @@ public class MainClient {
          
        String name;
 		try {
-			System.out.print("Enter the number :");  
+			System.out.println("Enter the number ::");  
+			
 			name = reader.readLine();
-			System.out.println("Converted word is==>>>    " + NumberToWordConverter.convertToWord(name));
+			System.out.println("Converted word is->    " + NumberToWordConverter.convertToWord(name));
 	
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		} 
   
